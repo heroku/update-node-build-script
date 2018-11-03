@@ -1,0 +1,44 @@
+{
+  "name": "test-fixture",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "ansi-to-react": "^2.0.6",
+    "apollo-server-express": "^1.2.0",
+    "body-parser": "^1.18.2",
+    "concurrently": "^3.5.0",
+    "date-fns": "^1.28.5",
+    "debug": "^2.6.8",
+    "express": "^4.15.4",
+    "flow-bin": "^0.51.1",
+    "graphql": "^0.11.7",
+    "graphql-tools": "^2.11.0",
+    "helmet": "^3.8.1",
+    "history": "^4.6.3",
+    "link-react": "^3.0.0",
+    "lodash": "^4.17.4",
+    "node-fetch": "^1.7.2",
+    "query-string": "^5.0.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-scripts": "1.0.10",
+    "url-pattern": "^1.0.3"
+  },
+  "devDependencies": {
+    "prettier": "^1.5.3"
+  },
+  "scripts": {
+    "start": "node index",
+    "postinstall": "npm run build",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "prettify": "prettier --single-quote --trailing-comma all --write 'src/**/*.js'"
+  },
+  "engines": {
+    "node": "8.9.3",
+    "yarn": "1.5.1"
+  },
+  "flow": "flow",
+  "proxy": "http://localhost:3001"
+}
