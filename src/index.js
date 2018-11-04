@@ -174,7 +174,10 @@ This app ${chalk.bold('will not')} be affected by upcoming changes, and no modif
   readPackageJson(dir) {
     let packageJsonLocation = join(dir, 'package.json');
     if (!existsSync(packageJsonLocation)) {
-      return this.error("No package.json");
+      return this.error(`No package.json found in ${dir}.
+
+This command is designed to be run in the root directory of a Heroku app with a package.json file. Run
+with --help for more information.`);
     }
     let f = readFileSync(packageJsonLocation);
     return f.toString();
