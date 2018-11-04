@@ -6,7 +6,7 @@ let { join } = require('path');
 let { readFileSync, writeFileSync, existsSync } = require('fs');
 
 let changeDate = "Monday, Nov 13";
-let documentationLink = "https://devcenter.heroku.com";
+let documentationLink = "https://kb.heroku.com/P5IMU3MP/heroku-node-js-build-script-change-faq";
 
 class UpdateHerokuBuildScriptCommand extends Command {
   async run() {
@@ -135,7 +135,7 @@ This app is using a "postinstall" and a "build" script:
 "postinstall": "${pkg.scripts.postinstall}" 
 "build": "${pkg.scripts.build}" 
 
-${chalk.blue.bold('We suggest moving this script to "heroku-postbuild"')}
+${chalk.blue.bold('We suggest moving the "postinstall" script to "heroku-postbuild"')}
 
 If you do not make this change, then both your "build" and "postinstall" scripts will be executed twice when pushing
 to Heroku after ${ changeDate }.
