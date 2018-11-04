@@ -88,9 +88,10 @@ class UpdateHerokuBuildScriptCommand extends Command {
 
 
   userDeniedChanges() {
-    this.log(`${chalk.bold('No changes written to disk.')}
+    this.log(`
+${chalk.bold('No changes written to disk.')}
     
-    To learn more about the upcoming change, read more at: ${documentationLink}`);
+To learn more about the upcoming change, read more at: ${documentationLink}`);
   }
 
   async promptEmptyHerokuPostbuild(pkg) {
@@ -167,7 +168,7 @@ This app ${chalk.bold('will not')} be affected by upcoming changes, and no modif
       this.error("An unexpected error occured. Expected a file at " + packageJsonLocation);
     } 
     writeFileSync(packageJsonLocation, JSON.stringify(pkg, null, 2) + '\n');
-    this.log(`Wrote changes to ${packageJsonLocation}`)
+    this.log(`\nWrote changes to ${packageJsonLocation}`);
   }
 
   readPackageJson(dir) {
