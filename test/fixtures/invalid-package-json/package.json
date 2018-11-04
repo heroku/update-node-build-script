@@ -22,15 +22,14 @@
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-scripts": "1.0.10",
-    "url-pattern": "^1.0.3"
+    "url-pattern": "^1.0.3",
   },
   "devDependencies": {
     "prettier": "^1.5.3"
   },
   "scripts": {
     "start": "node index",
-    "postinstall": "echo postinstall",
-    "build": "react-scripts build",
+    "heroku-postbuild": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "prettify": "prettier --single-quote --trailing-comma all --write 'src/**/*.js'"
