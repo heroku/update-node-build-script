@@ -19,6 +19,7 @@ class UpdateHerokuBuildScriptCommand extends Command {
     let scripts = pkg.scripts || {};
 
     let hasScripts = pkg.hasOwnProperty('scripts');
+    let hasOptedIn = pkg.hasOwnProperty('heroku-build-change-opt-in') && pkg['heroku-build-change-opt-in'] === true;
     let hasBuildScript = scripts.hasOwnProperty('build');
     let hasPostinstallScript = scripts.hasOwnProperty('postinstall');
     let hasHerokuPostBuildScript = scripts.hasOwnProperty('heroku-postbuild');
@@ -33,6 +34,13 @@ class UpdateHerokuBuildScriptCommand extends Command {
     if (!hasScripts) {
       return this.nothingToDo();
     }
+
+    // if they have already opted-in, there is nothing to do
+    if (hasOptedIn) {
+      return this.nothingToDo();
+    }
+
+    // TODO: if the postinstall script is the same as the build script
 
     if (hasPostinstallScript) {
       if (hasBuildScript && !hasHerokuPostBuildScript) {
@@ -137,7 +145,7 @@ This app is using a "postinstall" and a "build" script:
 
 ${chalk.blue.bold('We suggest moving the "postinstall" script to "heroku-postbuild"')}
 
-If you do not make this change, then both your "build" and "postinstall" scripts will be executed twice when pushing
+If you do not make this change, then both your "build" and "postinstall" scripts will be executed when pushing
 to Heroku after ${ changeDate }.
 `);
 
@@ -147,7 +155,9 @@ to Heroku after ${ changeDate }.
 
   nothingToDo() {
     this.log(`
-This app ${chalk.bold('will not')} be affected by upcoming changes, and no modifications are needed.`);
+This app ${chalk.bold('will not')} be affected by upcoming changes, and no modifications are needed.
+
+To learn more about the upcoming change, read more at: ${documentationLink}`);
     this.exit(0);
   }
 
