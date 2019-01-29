@@ -155,7 +155,7 @@ to Heroku after ${ changeDate }.
 
   nothingToDo() {
     this.log(`
-This app ${chalk.bold('will not')} be affected by upcoming changes, and no modifications are needed.
+✅ This app ${chalk.bold('will not')} be affected by upcoming changes, and no modifications are needed.
 
 To learn more about the upcoming change, read more at: ${documentationLink}`);
     this.exit(0);
