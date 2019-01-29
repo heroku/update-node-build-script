@@ -5,7 +5,7 @@ let {Command, flags} = require('@oclif/command');
 let { join } = require('path');
 let { readFileSync, writeFileSync, existsSync } = require('fs');
 
-let changeDate = "Monday, Nov 13";
+let changeDate = "Monday, March 11";
 let documentationLink = "https://kb.heroku.com/P5IMU3MP/heroku-node-js-build-script-change-faq";
 
 class UpdateHerokuBuildScriptCommand extends Command {
@@ -97,9 +97,9 @@ class UpdateHerokuBuildScriptCommand extends Command {
 
   userDeniedChanges() {
     this.log(`
-${chalk.bold('No changes written to disk.')}
+⚠️  ${chalk.bold('No changes written to disk.')}
     
-To learn more about the upcoming change, read more at: ${documentationLink}`);
+📖  To learn more about the upcoming change, read more at: ${documentationLink}`);
   }
 
   async promptEmptyHerokuPostbuild(pkg) {
@@ -155,9 +155,9 @@ to Heroku after ${ changeDate }.
 
   nothingToDo() {
     this.log(`
-✅ This app ${chalk.bold('will not')} be affected by upcoming changes, and no modifications are needed.
+✅  This app ${chalk.bold('will not')} be affected by upcoming changes! You don't need to do anything.
 
-To learn more about the upcoming change, read more at: ${documentationLink}`);
+📖  To learn more about the upcoming change, read more at: ${documentationLink}`);
     this.exit(0);
   }
 
