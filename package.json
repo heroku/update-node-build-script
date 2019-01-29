@@ -1,7 +1,7 @@
 {
-  "name": "update-heroku-build-script",
+  "name": "@heroku/update-node-build-script",
   "description": "A one-time migration tool to help you get your builds running on Heroku with a single command",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Jeremy Morrell",
   "bin": {
     "update-heroku-build-script": "./bin/run"
@@ -28,7 +28,7 @@
     "/bin",
     "/src"
   ],
-  "homepage": "https://github.com/heroku/update-heroku-build-script",
+  "homepage": "https://github.com/heroku/update-node-build-script",
   "keywords": [
     "oclif"
   ],
@@ -37,7 +37,7 @@
   "oclif": {
     "bin": "update-heroku-build-script"
   },
-  "repository": "heroku/update-heroku-build-script",
+  "repository": "heroku/update-node-build-script",
   "scripts": {
     "test": "nyc mocha --forbid-only \"test/**/*.test.js\""
   }
