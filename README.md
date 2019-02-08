@@ -6,6 +6,7 @@
 
 To make getting started with Node.js on Heroku easier we will begin executing the `build` script 
 by default if it is defined in your `package.json`. This change will go live on **Monday, March 11, 2019**.
+Read more about this change in [our FAQ](https://help.heroku.com/P5IMU3MP/heroku-node-js-build-script-change-faq).
 
 For users with an existing `build` script that they may not want run during the build, this will
 require some slight modifications to their `package.json`. The modifications are simple and mechanical,
