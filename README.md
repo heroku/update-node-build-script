@@ -1,6 +1,8 @@
 @heroku/update-node-build-script
 ==========================
 
+[![Version](https://img.shields.io/npm/v/@heroku/update-node-build-script.svg)](https://www.npmjs.com/package/@heroku/update-node-build-script)
+
 To make getting started with Node.js on Heroku easier we will begin executing the `build` script 
 by default if it is defined in your `package.json`. This change will go live on **Monday, March 11, 2019**.
 
