@@ -1,12 +1,10 @@
 let disparity = require('disparity');
 let inquirer = require('inquirer');
-let chalk = require('chalk');
 let {Command, flags} = require('@oclif/command');
 let { join } = require('path');
 let { readFileSync, writeFileSync, existsSync } = require('fs');
 
-let changeDate = "Monday, March 11";
-let documentationLink = "https://kb.heroku.com/P5IMU3MP/heroku-node-js-build-script-change-faq";
+let messages = require('./messages.js');
 
 class UpdateHerokuBuildScriptCommand extends Command {
   async run() {
@@ -46,11 +44,11 @@ class UpdateHerokuBuildScriptCommand extends Command {
       if (hasBuildScript && !hasHerokuPostBuildScript) {
         if (postinstallIsRunBuild) {
           // in this case, we can remove the postinstall, and opt-in to the build change
-          await this.promptToRemovePostinstall(pkg);
+          this.promptToRemovePostinstall(pkg);
         } else {
           // offer to move postinstall to heroku-postbuild or keep it and 
           // add an empty heroku-postbuild
-          await this.promptToMovePostinstallToHerokuPostBuild(pkg);
+          this.promptToMovePostinstallToHerokuPostBuild(pkg);
         }
       } else if (hasHerokuPostBuildScript) {
         return this.nothingToDo();
@@ -77,15 +75,24 @@ class UpdateHerokuBuildScriptCommand extends Command {
 
     this.log(diff);
 
-    let { answer } = await inquirer.prompt({
-      type: 'list',
-      message: "Would you like to apply these changes?",
-      name: 'answer',
-      choices: [
-        'Yes',
-        'No'
-      ]
-    });
+    let answer = 'No';
+
+    if (flags.yes) {
+      answer = 'Yes';
+    } else if (flags.no) {
+      answer = 'No'
+    } else {
+      let result = await inquirer.prompt({
+        type: 'list',
+        message: "Would you like to apply these changes?",
+        name: 'answer',
+        choices: [
+          'Yes',
+          'No'
+        ]
+      });
+      answer = result.answer;
+    }
 
     if (answer === 'Yes') {
       this.writeNewPackageJson(directory, pkg);
@@ -94,71 +101,29 @@ class UpdateHerokuBuildScriptCommand extends Command {
     }
   }
 
-
   userDeniedChanges() {
-    this.log(`
-⚠️  ${chalk.bold('No changes written to disk.')}
-    
-📖  To learn more about the upcoming change, read more at: ${documentationLink}`);
+    this.log(messages.deniedChanges());
   }
 
-  async promptEmptyHerokuPostbuild(pkg) {
-    this.log(`
-This app is using a "build" script:
-
-"build": "${pkg.scripts.build}"
-
-This script is not currently being run when this app is pushed to Heroku, but 
-${chalk.blue.bold(`Heroku will start running the "build" script automatically starting on ${changeDate}.`)}
-
-We suggest adding an empty "heroku-postbuild" script to prevent any change in behavior 
-when deploying after ${changeDate}. When a "heroku-postbuild" script is present Heroku 
-will run it instead of the "build" script.`)
+  promptEmptyHerokuPostbuild(pkg) {
+    this.log(messages.emptyHerokuPostbuild(pkg))
     pkg.scripts['heroku-postbuild'] = "echo Skip build on Heroku"
   }
 
-  async promptToRemovePostinstall(pkg) {
-    this.log(`
-This app is using a "postinstall" script:
-
-"postinstall": "${pkg.scripts.postinstall}"
-
-It's only being used to run the "build" script. Heroku will start running the "build" script 
-automatically starting on ${changeDate}.
-
-${chalk.blue.bold('We suggest removing the "postinstall" script and opting into the change early by setting')}
-${chalk.blue.bold('an opt-in key in your package.json.')}
-
-If you do not make this change, then your "build" script will be executed twice when pushing 
-to Heroku after ${changeDate}.`);
-
+  promptToRemovePostinstall(pkg) {
+    this.log(messages.removePostinstall(pkg));
     delete pkg.scripts.postinstall;
     pkg['heroku-build-change-opt-in'] = true;
   }
 
   promptToMovePostinstallToHerokuPostBuild(pkg) {
-    this.log(`
-This app is using a "postinstall" and a "build" script:
-
-"postinstall": "${pkg.scripts.postinstall}" 
-"build": "${pkg.scripts.build}" 
-
-${chalk.blue.bold('We suggest moving the "postinstall" script to "heroku-postbuild"')}
-
-If you do not make this change, then both your "build" and "postinstall" scripts will be executed when pushing
-to Heroku after ${ changeDate }.
-`);
-
+    this.log(messages.promptToMovePostinstallToHerokuPostBuild(pkg));
     pkg.scripts['heroku-postbuild'] = pkg.scripts.postinstall;
     delete pkg.scripts.postinstall;
   }
 
   nothingToDo() {
-    this.log(`
-✅  This app ${chalk.bold('will not')} be affected by upcoming changes! You don't need to do anything.
-
-📖  To learn more about the upcoming change, read more at: ${documentationLink}`);
-    this.exit(0);
+    this.log(messages.nothingToDo());
   }
 
   parsePackageJson(contents) {
@@ -212,6 +177,18 @@ UpdateHerokuBuildScriptCommand.flags = {
   version: flags.version({char: 'v'}),
   // add --help flag to show CLI version
   help: flags.help({char: 'h'}),
+  // add --yes to default to making the change
+  yes: flags.boolean({
+    char: 'y',
+    description: "Default to answering yes to changes",
+    hidden: true,
+  }),
+  // add --no to default to not making the change
+  no: flags.boolean({
+    char: 'n',
+    description: "Default to answering no to changes",
+    hidden: true,
+  })
 }
 
 module.exports = UpdateHerokuBuildScriptCommand
