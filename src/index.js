@@ -18,8 +18,8 @@ class UpdateHerokuBuildScriptCommand extends Command {
 
     let hasScripts = pkg.hasOwnProperty("scripts");
     let hasOptedIn =
-      pkg.hasOwnProperty("heroku-build-change-opt-in") &&
-      pkg["heroku-build-change-opt-in"] === true;
+      pkg.hasOwnProperty("heroku-run-build-script") &&
+      pkg["heroku-run-build-script"] === true;
     let hasBuildScript = scripts.hasOwnProperty("build");
     let hasPostinstallScript = scripts.hasOwnProperty("postinstall");
     let hasHerokuPostBuildScript = scripts.hasOwnProperty("heroku-postbuild");
@@ -107,25 +107,25 @@ class UpdateHerokuBuildScriptCommand extends Command {
   promptEmptyHerokuPostbuild(pkg) {
     this.log(messages.emptyHerokuPostbuild(pkg));
     pkg.scripts["heroku-postbuild"] = "echo Skip build on Heroku";
-    pkg["heroku-build-change-opt-in"] = true;
+    pkg["heroku-run-build-script"] = true;
   }
 
   promptToRemovePostinstall(pkg) {
     this.log(messages.removePostinstall(pkg));
     delete pkg.scripts.postinstall;
-    pkg["heroku-build-change-opt-in"] = true;
+    pkg["heroku-run-build-script"] = true;
   }
 
   promptToMovePostinstallToBuild(pkg) {
     this.log(messages.movePostinstallToBuild(pkg));
     pkg.scripts["build"] = pkg.scripts.postinstall;
     delete pkg.scripts.postinstall;
-    pkg["heroku-build-change-opt-in"] = true;
+    pkg["heroku-run-build-script"] = true;
   }
 
   promptOptIn(pkg) {
     this.log(messages.suggestOptIn());
-    pkg["heroku-build-change-opt-in"] = true;
+    pkg["heroku-run-build-script"] = true;
   }
 
   alreadyOptedIn() {

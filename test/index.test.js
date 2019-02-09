@@ -39,7 +39,7 @@ describe("build-with-heroku-posbuild", () => {
       expect(ctx.stdout).to.contain("We suggest opting in to the new behavior");
 
       let pkg = readJSON(f);
-      expect(pkg["heroku-build-change-opt-in"]).to.be.true;
+      expect(pkg["heroku-run-build-script"]).to.be.true;
     });
 });
 
@@ -55,7 +55,7 @@ describe("build-without-heroku-postbuild", () => {
       );
 
       let pkg = readJSON(f);
-      expect(pkg["heroku-build-change-opt-in"]).to.be.true;
+      expect(pkg["heroku-run-build-script"]).to.be.true;
       expect(pkg.scripts["heroku-postbuild"]).to.equal(
         "echo Skip build on Heroku"
       );
@@ -72,7 +72,7 @@ describe("heroku-postbuild-only", () => {
       expect(ctx.stdout).to.contain("We suggest opting in to the new behavior");
 
       let pkg = readJSON(f);
-      expect(pkg["heroku-build-change-opt-in"]).to.be.true;
+      expect(pkg["heroku-run-build-script"]).to.be.true;
     });
 });
 
@@ -86,7 +86,7 @@ describe("no-scripts", () => {
       expect(ctx.stdout).to.contain("We suggest opting in to the new behavior");
 
       let pkg = readJSON(f);
-      expect(pkg["heroku-build-change-opt-in"]).to.be.true;
+      expect(pkg["heroku-run-build-script"]).to.be.true;
     });
 });
 
@@ -100,7 +100,7 @@ describe("postinstall-and-build", () => {
       expect(ctx.stdout).to.contain(`We suggest moving the "postinstall" script to "build" and opting in to the new behavior`);
 
       let pkg = readJSON(f);
-      expect(pkg["heroku-build-change-opt-in"]).to.be.true;
+      expect(pkg["heroku-run-build-script"]).to.be.true;
       expect(pkg.scripts["build"]).to.equal("echo postinstall");
       expect(pkg.scripts["postinstall"]).to.be.undefined
     });
@@ -120,7 +120,7 @@ describe("postinstall-and-build-and-heroku-postbuild", () => {
       );
 
       let pkg = readJSON(f);
-      expect(pkg["heroku-build-change-opt-in"]).to.be.true;
+      expect(pkg["heroku-run-build-script"]).to.be.true;
     });
 });
 
@@ -136,7 +136,7 @@ describe("postinstall-is-run-build", () => {
       );
 
       let pkg = readJSON(f);
-      expect(pkg["heroku-build-change-opt-in"]).to.be.true;
+      expect(pkg["heroku-run-build-script"]).to.be.true;
       expect(pkg.scripts["build"]).to.equal("react-scripts build")
       expect(pkg["postinstall"]).to.be.undefined;
     });
@@ -154,7 +154,7 @@ describe("postinstall-is-yarn-build", () => {
       );
 
       let pkg = readJSON(f);
-      expect(pkg["heroku-build-change-opt-in"]).to.be.true;
+      expect(pkg["heroku-run-build-script"]).to.be.true;
       expect(pkg.scripts["build"]).to.equal("react-scripts build");
       expect(pkg["postinstall"]).to.be.undefined;
     });
@@ -172,7 +172,7 @@ describe("postinstall-is-yarn-run-build", () => {
       );
 
       let pkg = readJSON(f);
-      expect(pkg["heroku-build-change-opt-in"]).to.be.true;
+      expect(pkg["heroku-run-build-script"]).to.be.true;
       expect(pkg.scripts["build"]).to.equal("react-scripts build");
       expect(pkg["postinstall"]).to.be.undefined;
     });
@@ -188,6 +188,6 @@ describe("postinstall-only", () => {
       expect(ctx.stdout).to.contain("We suggest opting in to the new behavior");
 
       let pkg = readJSON(f);
-      expect(pkg["heroku-build-change-opt-in"]).to.be.true;
+      expect(pkg["heroku-run-build-script"]).to.be.true;
     });
 });

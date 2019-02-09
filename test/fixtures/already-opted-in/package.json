@@ -40,5 +40,5 @@
   },
   "flow": "flow",
   "proxy": "http://localhost:3001",
-  "heroku-build-change-opt-in": true
+  "heroku-run-build-script": true
 }
