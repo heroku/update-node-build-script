@@ -58,7 +58,7 @@ $ npm uninstall -g @heroku/update-node-build-script
 When it runs it will inspect the contents of your `package.json` file, note which `scripts` you have defined,
 and suggest a modification that will opt you in to the new build rules while maintaining your existing build behavior.
 
-It will make no changes without your explicit approval. You are also free to make the changes
+It will make no changes without your explicit approval.
 
 ![hyper 2019-02-08 22-59-32](https://user-images.githubusercontent.com/175496/52517799-b549b800-2bf5-11e9-95db-187e7ecc1e54.png)
 
