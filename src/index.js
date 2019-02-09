@@ -8,7 +8,7 @@ let messages = require('./messages.js');
 
 class UpdateHerokuBuildScriptCommand extends Command {
   async run() {
-    let {flags, args} = this.parse(UpdateHerokuBuildScriptCommand)
+    let { flags, args } = this.parse(UpdateHerokuBuildScriptCommand);
     let { directory } = args;
 
     let pkgContents = this.readPackageJson(directory);
@@ -16,66 +16,63 @@ class UpdateHerokuBuildScriptCommand extends Command {
 
     let scripts = pkg.scripts || {};
 
-    let hasScripts = pkg.hasOwnProperty('scripts');
-    let hasOptedIn = pkg.hasOwnProperty('heroku-build-change-opt-in') && pkg['heroku-build-change-opt-in'] === true;
-    let hasBuildScript = scripts.hasOwnProperty('build');
-    let hasPostinstallScript = scripts.hasOwnProperty('postinstall');
-    let hasHerokuPostBuildScript = scripts.hasOwnProperty('heroku-postbuild');
+    let hasScripts = pkg.hasOwnProperty("scripts");
+    let hasOptedIn =
+      pkg.hasOwnProperty("heroku-build-change-opt-in") &&
+      pkg["heroku-build-change-opt-in"] === true;
+    let hasBuildScript = scripts.hasOwnProperty("build");
+    let hasPostinstallScript = scripts.hasOwnProperty("postinstall");
+    let hasHerokuPostBuildScript = scripts.hasOwnProperty("heroku-postbuild");
 
-    let postinstallIsRunBuild = hasPostinstallScript && [
-      'npm run build',
-      'yarn run build',
-      'yarn build'
-    ].includes(scripts['postinstall'].trim());
-
-    // if there are no scripts, there is nothing to do
-    if (!hasScripts) {
-      return this.nothingToDo();
-    }
+    let postinstallIsRunBuild =
+      hasPostinstallScript &&
+      ["npm run build", "yarn run build", "yarn build"].includes(
+        scripts["postinstall"].trim()
+      );
 
     // if they have already opted-in, there is nothing to do
     if (hasOptedIn) {
-      return this.nothingToDo();
+      return this.alreadyOptedIn();
     }
 
-    if (hasPostinstallScript) {
+    // if there are no scripts, prompt opt-in to be safe
+    if (!hasScripts) {
+      this.promptOptIn(pkg);
+    } else if (hasPostinstallScript) {
       if (hasBuildScript && !hasHerokuPostBuildScript) {
         if (postinstallIsRunBuild) {
           // in this case, we can remove the postinstall, and opt-in to the build change
           this.promptToRemovePostinstall(pkg);
         } else {
-          // offer to move postinstall to heroku-postbuild or keep it and 
-          // add an empty heroku-postbuild
-          this.promptToMovePostinstallToHerokuPostBuild(pkg);
+          // offer to move postinstall to build
+          this.promptToMovePostinstallToBuild(pkg);
         }
       } else if (hasHerokuPostBuildScript) {
-        return this.nothingToDo();
+        this.promptOptIn(pkg);
       } else {
         // has postinstall script, but no build script, will not be affected by changes
-        return this.nothingToDo();
+        this.promptOptIn(pkg);
       }
     } else if (!hasBuildScript) {
-    // if there is no build script, there is nothing to do 
-      return this.nothingToDo();
+      this.promptOptIn(pkg);
     } else if (hasHerokuPostBuildScript) {
-      // if there is already a heroku-postbuild, there is nothing to do
-      return this.nothingToDo();
+      this.promptOptIn(pkg);
     } else {
-      // if there is a build script, but not a heroku-postbuild script, 
+      // if there is a build script, but not a heroku-postbuild script,
       // offer to add an empty heroku-postbuild script
       this.promptEmptyHerokuPostbuild(pkg);
     }
-    
-    let answer = await this.promptChangeWithDiff(pkgContents, pkg);
 
-    if (answer === 'Yes') {
+    let answer = await this.promptChangeWithDiff(pkgContents, pkg, flags);
+
+    if (answer === "Yes") {
       this.writeNewPackageJson(directory, pkg);
     } else {
       this.userDeniedChanges();
     }
   }
 
-  async promptChangeWithDiff(pkgContents, pkg) {
+  async promptChangeWithDiff(pkgContents, pkg, flags) {
     let diff = disparity.unified(
       pkgContents,
       JSON.stringify(pkg, null, 2) + "\n",
@@ -108,24 +105,31 @@ class UpdateHerokuBuildScriptCommand extends Command {
   }
 
   promptEmptyHerokuPostbuild(pkg) {
-    this.log(messages.emptyHerokuPostbuild(pkg))
-    pkg.scripts['heroku-postbuild'] = "echo Skip build on Heroku"
+    this.log(messages.emptyHerokuPostbuild(pkg));
+    pkg.scripts["heroku-postbuild"] = "echo Skip build on Heroku";
+    pkg["heroku-build-change-opt-in"] = true;
   }
 
   promptToRemovePostinstall(pkg) {
     this.log(messages.removePostinstall(pkg));
     delete pkg.scripts.postinstall;
-    pkg['heroku-build-change-opt-in'] = true;
+    pkg["heroku-build-change-opt-in"] = true;
   }
 
-  promptToMovePostinstallToHerokuPostBuild(pkg) {
-    this.log(messages.promptToMovePostinstallToHerokuPostBuild(pkg));
-    pkg.scripts['heroku-postbuild'] = pkg.scripts.postinstall;
+  promptToMovePostinstallToBuild(pkg) {
+    this.log(messages.movePostinstallToBuild(pkg));
+    pkg.scripts["build"] = pkg.scripts.postinstall;
     delete pkg.scripts.postinstall;
+    pkg["heroku-build-change-opt-in"] = true;
   }
 
-  nothingToDo() {
-    this.log(messages.nothingToDo());
+  promptOptIn(pkg) {
+    this.log(messages.suggestOptIn());
+    pkg["heroku-build-change-opt-in"] = true;
+  }
+
+  alreadyOptedIn() {
+    this.log(messages.alreadyOptedIn());
   }
 
   parsePackageJson(contents) {
@@ -133,28 +137,27 @@ class UpdateHerokuBuildScriptCommand extends Command {
     try {
       pkg = JSON.parse(contents);
     } catch (e) {
-      console.log(e);
-      return this.error("package.json was invalid JSON and could not be updated");
+      this.error(messages.invalidPackageJson());
     }
     return pkg;
   }
 
   writeNewPackageJson(dir, pkg) {
-    let packageJsonLocation = join(dir, 'package.json');
+    let packageJsonLocation = join(dir, "package.json");
     if (!existsSync(packageJsonLocation)) {
-      this.error("An unexpected error occured. Expected a file at " + packageJsonLocation);
-    } 
-    writeFileSync(packageJsonLocation, JSON.stringify(pkg, null, 2) + '\n');
+      this.error(
+        "An unexpected error occured. Expected a file at " + packageJsonLocation
+      );
+    }
+    writeFileSync(packageJsonLocation, JSON.stringify(pkg, null, 2) + "\n");
     this.log(messages.changesWrittenSuccessfully(packageJsonLocation));
   }
 
   readPackageJson(dir) {
-    let packageJsonLocation = join(dir, 'package.json');
+    let packageJsonLocation = join(dir, "package.json");
     if (!existsSync(packageJsonLocation)) {
-      return this.error(`No package.json found in ${dir}.
-
-This command is designed to be run in the root directory of a Heroku app with a package.json file. Run
-with --help for more information.`);
+      this.log(messages.noPackageJsonError(dir));
+      process.exit(0);
     }
     let f = readFileSync(packageJsonLocation);
     return f.toString();
