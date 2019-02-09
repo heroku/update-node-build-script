@@ -38,8 +38,6 @@ class UpdateHerokuBuildScriptCommand extends Command {
       return this.nothingToDo();
     }
 
-    // TODO: if the postinstall script is the same as the build script
-
     if (hasPostinstallScript) {
       if (hasBuildScript && !hasHerokuPostBuildScript) {
         if (postinstallIsRunBuild) {
@@ -147,7 +145,7 @@ class UpdateHerokuBuildScriptCommand extends Command {
       this.error("An unexpected error occured. Expected a file at " + packageJsonLocation);
     } 
     writeFileSync(packageJsonLocation, JSON.stringify(pkg, null, 2) + '\n');
-    this.log(`\nWrote changes to ${packageJsonLocation}`);
+    this.log(messages.changesWrittenSuccessfully(packageJsonLocation));
   }
 
   readPackageJson(dir) {

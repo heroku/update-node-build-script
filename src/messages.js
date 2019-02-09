@@ -1,3 +1,4 @@
+let path = require('path');
 let chalk = require("chalk");
 
 let changeDate = "Monday, March 11";
@@ -72,6 +73,21 @@ We suggest the following changes:
 ${diff}`;
 }
 
+function changesWrittenSuccessfully(packageJsonLocation) {
+  let cwd = process.cwd();
+  let p = path.relative(cwd, packageJsonLocation);
+
+  return `
+Wrote changes to ${chalk.bold(p)}!
+
+Please be sure to commit your changes and redeploy:
+
+$ git add ${p}
+$ git commit -m "Adapted build scripts to Heroku changes"
+$ git push heroku master
+`
+}
+
 function nothingToDo() {
   return `
 ${emoji("✅  ")}This app ${chalk.bold("will not")} be affected by upcoming changes! You don't need to do anything.
@@ -85,5 +101,6 @@ module.exports = {
   removePostinstall,
   movePostinstallToHerokuPostbuild,
   proposedChange,
+  changesWrittenSuccessfully,
   nothingToDo,
-}
+};
