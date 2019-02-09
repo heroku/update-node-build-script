@@ -68,37 +68,41 @@ class UpdateHerokuBuildScriptCommand extends Command {
       this.promptEmptyHerokuPostbuild(pkg);
     }
     
-    this.log(('\nWe suggest the following changes:\n'));
-    let diff = disparity.unified(pkgContents, JSON.stringify(pkg, null, 2) + '\n', {
-      paths: ['package.json', 'package.json'],
-    });
-
-    this.log(diff);
-
-    let answer = 'No';
-
-    if (flags.yes) {
-      answer = 'Yes';
-    } else if (flags.no) {
-      answer = 'No'
-    } else {
-      let result = await inquirer.prompt({
-        type: 'list',
-        message: "Would you like to apply these changes?",
-        name: 'answer',
-        choices: [
-          'Yes',
-          'No'
-        ]
-      });
-      answer = result.answer;
-    }
+    let answer = await this.promptChangeWithDiff(pkgContents, pkg);
 
     if (answer === 'Yes') {
       this.writeNewPackageJson(directory, pkg);
     } else {
       this.userDeniedChanges();
     }
+  }
+
+  async promptChangeWithDiff(pkgContents, pkg) {
+    let diff = disparity.unified(
+      pkgContents,
+      JSON.stringify(pkg, null, 2) + "\n",
+      {
+        paths: ["package.json", "package.json"]
+      }
+    );
+
+    this.log(messages.proposedChange(diff));
+
+    let answer = "No";
+    if (flags.yes) {
+      answer = "Yes";
+    } else if (flags.no) {
+      answer = "No";
+    } else {
+      let result = await inquirer.prompt({
+        type: "list",
+        message: "Would you like to apply these changes?",
+        name: "answer",
+        choices: ["Yes", "No"]
+      });
+      answer = result.answer;
+    }
+    return answer;
   }
 
   userDeniedChanges() {
@@ -167,9 +171,20 @@ UpdateHerokuBuildScriptCommand.args = [
   }
 ];
 
-UpdateHerokuBuildScriptCommand.description = `A one-time migration tool to help you get your builds running on Heroku with a single command
-...
-Extra documentation goes here
+UpdateHerokuBuildScriptCommand.description = `A one-time migration tool to prepare your Heroku Node.js app for a build change on March 11, 2019
+To make getting started with Node.js on Heroku easier we will begin executing the "build" script 
+by default if it is defined in your package.json. This change will go live on Monday, March 11, 2019.
+
+Read more about this change in our FAQ: https://help.heroku.com/P5IMU3MP/heroku-node-js-build-script-change-faq
+
+This CLI tool is meant to be run in your app's root directory where your package.json is 
+located. However you may also pass in a directory as an argument.
+
+$ update-node-build-script
+
+or
+
+$ update-node-build-script $YOUR_APP_DIRECTORY
 `;
 
 UpdateHerokuBuildScriptCommand.flags = {
@@ -180,8 +195,7 @@ UpdateHerokuBuildScriptCommand.flags = {
   // add --yes to default to making the change
   yes: flags.boolean({
     char: 'y',
-    description: "Default to answering yes to changes",
-    hidden: true,
+    description: "Don't prompt for an answer and just make the change",
   }),
   // add --no to default to not making the change
   no: flags.boolean({

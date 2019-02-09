@@ -4,9 +4,9 @@
   "version": "0.0.3",
   "author": "Jeremy Morrell",
   "bin": {
-    "update-heroku-build-script": "./bin/run"
+    "update-node-build-script": "./bin/run"
   },
-  "bugs": "https://github.com/heroku/update-heroku-build-script/issues",
+  "bugs": "https://github.com/heroku/update-node-build-script/issues",
   "dependencies": {
     "@oclif/command": "^1.5.4",
     "@oclif/config": "^1.8.8",
@@ -37,7 +37,7 @@
   "license": "MIT",
   "main": "src/index.js",
   "oclif": {
-    "bin": "update-heroku-build-script"
+    "bin": "update-node-build-script"
   },
   "repository": "heroku/update-node-build-script",
   "scripts": {

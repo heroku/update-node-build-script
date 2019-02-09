@@ -66,6 +66,12 @@ to Heroku after ${ changeDate }.
 `;
 }
 
+function proposedChange(diff) {
+  return `
+We suggest the following changes:
+${diff}`;
+}
+
 function nothingToDo() {
   return `
 ${emoji("✅  ")}This app ${chalk.bold("will not")} be affected by upcoming changes! You don't need to do anything.
@@ -78,5 +84,6 @@ module.exports = {
   emptyHerokuPostbuild,
   removePostinstall,
   movePostinstallToHerokuPostbuild,
+  proposedChange,
   nothingToDo,
 }

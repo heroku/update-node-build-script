@@ -34,7 +34,7 @@ or download and run this package directly:
 ```
 $ cd $APP_DIRECTORY
 $ npm install -g @heroku/update-node-build-script
-$ update-heroku-build-script
+$ update-node-build-script
 ```
 
 and then you can uninstall it when you are finished:

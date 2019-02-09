@@ -12,7 +12,7 @@ function getFixture(name) {
   return fixture.name
 }
 
-describe('update-heroku-build-script', () => {
+describe('update-node-build-script', () => {
 
   test
   .stdout()
