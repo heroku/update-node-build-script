@@ -168,7 +168,7 @@ UpdateHerokuBuildScriptCommand.args = [
   { 
     name: 'directory', 
     default: process.cwd(),
-    description: "The directory of the application to migrate. Defaults to the current directory.",
+    description: "The directory of the Heroku Node.js application. Defaults to the current directory.",
   }
 ];
 
