@@ -12,7 +12,7 @@ For users with an existing `build` script that they may not want run during the 
 require some slight modifications to their `package.json`. The modifications are simple and mechanical,
 and we have created this CLI tool to make that as easy as possible.
 
-TODO: Image of a run
+![hyper 2019-01-30 09-50-04](https://user-images.githubusercontent.com/175496/52517779-63089700-2bf5-11e9-864b-bd3ad98d5f73.png)
 
 ## Usage
 
@@ -50,7 +50,7 @@ and suggest a modification that will opt you in to the new build rules while mai
 
 It will make no changes without your explicit approval. You are also free to make the changes
 
-TODO: Image of a run
+![hyper 2019-01-30 09-50-04](https://user-images.githubusercontent.com/175496/52517779-63089700-2bf5-11e9-864b-bd3ad98d5f73.png)
 
 Feel free to inspect [the source of this tool](https://github.com/heroku/update-node-build-script/blob/master/src/index.js).
 
