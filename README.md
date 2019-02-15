@@ -14,7 +14,7 @@ $ npx @heroku/update-node-build-script
 
 ## Why?
 
-To make getting started with Node.js on Heroku easier we will begin executing the `build` script 
+To make getting started with Node.js on Heroku easier we will begin executing the `build` script
 by default if it is defined in your `package.json`. This change will go live on **Monday, March 11, 2019**.
 Read more about this change in [our FAQ](https://help.heroku.com/P5IMU3MP/heroku-node-js-build-script-change-faq).
 
@@ -32,7 +32,7 @@ You will need to make sure you are in your application's root directory, then ru
 $ npx @heroku/update-node-build-script
 ```
 
-`npx` is a tool that comes with the modern verions of `npm` bundled with Node. If for some reason, `npx` 
+`npx` is a tool that comes with the modern verions of `npm` bundled with Node. If for some reason, `npx`
 is not available on your system, you can install it with the following command:
 
 ```
@@ -68,4 +68,3 @@ Feel free to inspect [the source of this tool](https://github.com/heroku/update-
 
 No problem! This tool is provided only as a convenience. The changes are documented in [this FAQ](https://help.heroku.com/P5IMU3MP/heroku-node-js-build-script-change-faq)
 and are simple to perform manually.
-
