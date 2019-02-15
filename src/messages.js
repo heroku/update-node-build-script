@@ -90,7 +90,7 @@ Wrote changes to ${chalk.bold(p)}!
 Please be sure to commit your changes and redeploy:
 
 $ git add ${p}
-$ git commit -m "Adapted build scripts to Heroku changes"
+$ git commit -m"Adapt build scripts to Heroku changes"
 $ git push heroku master
 `;
 }
