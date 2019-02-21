@@ -165,20 +165,20 @@ class UpdateHerokuBuildScriptCommand extends Command {
 }
 
 UpdateHerokuBuildScriptCommand.args = [
-  { 
-    name: 'directory', 
+  {
+    name: 'directory',
     default: process.cwd(),
     description: "The directory of the Heroku Node.js application. Defaults to the current directory.",
   }
 ];
 
 UpdateHerokuBuildScriptCommand.description = `A one-time migration tool to prepare your Heroku Node.js app for a build change on March 11, 2019
-To make getting started with Node.js on Heroku easier we will begin executing the "build" script 
+To make getting started with Node.js on Heroku easier we will begin executing the "build" script
 by default if it is defined in your package.json. This change will go live on Monday, March 11, 2019.
 
 Read more about this change in our FAQ: https://help.heroku.com/P5IMU3MP/heroku-node-js-build-script-change-faq
 
-This CLI tool is meant to be run in your app's root directory where your package.json is 
+This CLI tool is meant to be run in your app's root directory where your package.json is
 located. However you may also pass in a directory as an argument.
 
 $ update-node-build-script
