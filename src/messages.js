@@ -70,6 +70,24 @@ If you do not make this change, then both your "build" and "postinstall" scripts
 executed when pushing to Heroku after ${changeDate}.`;
 }
 
+function movePostinstallToPostbuild(pkg) {
+  return `
+${emoji("⚠️  ")}This app ${chalk.bold("will")} be affected by upcoming changes!
+
+"postinstall": "${pkg.scripts.postinstall}"
+"build": "${pkg.scripts.build}"
+
+This "build" script is not currently being run when this app is pushed to Heroku, but
+Heroku will start running it automatically starting on ${changeDate}.
+
+${chalk.blue.bold(
+    'We suggest moving the "postinstall" script to "heroku-postbuild" and opting in to the new behavior.'
+  )}
+
+If you do not make this change, then both your "build" and "postinstall" scripts will be
+executed when pushing to Heroku after ${changeDate}.`;
+}
+
 function proposedChange(diff) {
   // take off the first 3 lines of the diff
   diff = diff.split(os.EOL).slice(3).join(os.EOL)
@@ -131,6 +149,7 @@ module.exports = {
   emptyHerokuPostbuild,
   removePostinstall,
   movePostinstallToBuild,
+  movePostinstallToPostbuild,
   proposedChange,
   changesWrittenSuccessfully,
   alreadyOptedIn,

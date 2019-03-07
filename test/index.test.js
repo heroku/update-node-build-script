@@ -191,3 +191,21 @@ describe("postinstall-only", () => {
       expect(pkg["heroku-run-build-script"]).to.be.true;
     });
 });
+
+describe("postinstall-contains-run-build", () => {
+  let f = getFixture("postinstall-contains-run-build");
+  test
+    .stdout()
+    .do(() => cmd.run([f, "-y"]))
+    .it("removes postinstall", ctx => {
+      expect(ctx.stdout).to.contain("will be affected by upcoming changes");
+      expect(ctx.stdout).to.contain(
+        `We suggest moving the "postinstall" script to "heroku-postbuild" and opting in to the new behavior.`
+      );
+
+      let pkg = readJSON(f);
+      expect(pkg["heroku-run-build-script"]).to.be.true;
+      expect(pkg.scripts["heroku-postbuild"]).to.equal("npm run build && gulp cachegoose:clear")
+      expect(pkg["postinstall"]).to.be.undefined;
+    });
+});

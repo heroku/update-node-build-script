@@ -30,6 +30,13 @@ class UpdateHerokuBuildScriptCommand extends Command {
         scripts["postinstall"].trim()
       );
 
+    let postinstallContainsRunBuild =
+      !!scripts["postinstall"] && (
+        !!scripts["postinstall"].match(/npm run build/) ||
+        !!scripts["postinstall"].match(/yarn run build/) ||
+        !!scripts["postinstall"].match(/yarn build/)
+      );
+
     // if they have already opted-in, there is nothing to do
     if (hasOptedIn) {
       return this.alreadyOptedIn();
@@ -42,7 +49,12 @@ class UpdateHerokuBuildScriptCommand extends Command {
       if (hasBuildScript && !hasHerokuPostBuildScript) {
         if (postinstallIsRunBuild) {
           // in this case, we can remove the postinstall, and opt-in to the build change
+          console.log('ran')
           this.promptToRemovePostinstall(pkg);
+        } else if (postinstallContainsRunBuild) {
+          // moving this to build causes an infinite loop, so let's move it to heroku-postbuild
+          // instead
+          this.promptMovePostInstallToPostbuild(pkg);
         } else {
           // offer to move postinstall to build
           this.promptToMovePostinstallToBuild(pkg);
@@ -119,6 +131,13 @@ class UpdateHerokuBuildScriptCommand extends Command {
   promptToMovePostinstallToBuild(pkg) {
     this.log(messages.movePostinstallToBuild(pkg));
     pkg.scripts["build"] = pkg.scripts.postinstall;
+    delete pkg.scripts.postinstall;
+    pkg["heroku-run-build-script"] = true;
+  }
+
+  promptMovePostInstallToPostbuild(pkg) {
+    this.log(messages.movePostinstallToPostbuild(pkg));
+    pkg.scripts["heroku-postbuild"] = pkg.scripts.postinstall;
     delete pkg.scripts.postinstall;
     pkg["heroku-run-build-script"] = true;
   }
