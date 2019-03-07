@@ -1,7 +1,7 @@
 {
   "name": "@heroku/update-node-build-script",
   "description": "A one-time migration tool to help you get your builds running on Heroku with a single command",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "Jeremy Morrell",
   "bin": {
     "update-node-build-script": "./bin/run"
