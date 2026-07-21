@@ -8,7 +8,7 @@
   },
   "bugs": "https://github.com/heroku/update-node-build-script/issues",
   "dependencies": {
-    "@oclif/command": "^1.5.4",
+    "@oclif/command": "^1.8.0",
     "@oclif/config": "^1.8.8",
     "@oclif/plugin-help": "^2.1.3",
     "chalk": "^2.4.1",
